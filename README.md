@@ -4,6 +4,20 @@ Modern .NET 10 / C# 14 client library for the [veadotube](https://veado.tube) We
 
 Supports the documented [`nodes` channel](https://veado.tube/docs/tech/api/nodes/) and [`instance` channel](https://veado.tube/docs/tech/api/instance/) for veadotube mini and veadotube. Instance auto-discovery reads the `~/.veadotube/instances/` drop directory across Windows, Linux, and macOS.
 
+## API coverage
+
+The veadotube WebSocket API exposes **two channels** and **three remotely-addressable node types** (the other 15 node categories listed on [the node reference page](https://veado.tube/docs/usage/veado/nodes/) — Audio, Bitmap, Color, Generators, Math, Subject, Timing, etc. — are internal visual-programming nodes inside veadotube's own node graph and are not reachable from outside the app). This library covers all of it:
+
+| Channel | Surface | Library entry point |
+|---|---|---|
+| `instance` | `info` (metadata, version, server) | `client.GetInstanceInfoAsync()` |
+| `nodes` | `list`, `listen`, `unlisten` (node discovery + subscription) | `client.GetNodesAsync()` / `ListenNodeListAsync()` / `UnlistenNodeListAsync()` |
+| `ws.boolean` | `get`, `set`, `toggle`, `clear`, `listen`, `unlisten` | `client.Boolean(nodeId)` |
+| `ws.number` | `get`, `set`, `add`, `clear`, `listen`, `unlisten` (with optional min/max range) | `client.Number(nodeId)` |
+| `ws.stateEvents` | `list`, `peek`, `thumb`, `set`, `push`, `pop`, `toggle`, `clear`, `listen`, `unlisten` | `client.States(nodeId)` |
+
+A `client.SendRawNodePayloadAsync(type, id, payload)` escape hatch is also provided for forward-compatibility with any future node type before this library catches up.
+
 ## Install
 
 ```pwsh
