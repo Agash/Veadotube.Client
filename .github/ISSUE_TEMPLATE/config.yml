@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: veadotube documentation
+    url: https://veado.tube/docs/
+    about: For questions about veadotube itself or the underlying protocol, please refer to the official docs.

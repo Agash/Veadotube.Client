@@ -1,0 +1,51 @@
+name: Bug report
+description: Something in the library is broken or behaves unexpectedly.
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: "e.g. 0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: veado-version
+    attributes:
+      label: veadotube version
+      placeholder: "e.g. 2.1 mini"
+    validations:
+      required: true
+
+  - type: input
+    id: dotnet
+    attributes:
+      label: .NET runtime
+      placeholder: "e.g. .NET 10.0.8, win-x64, AOT"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Describe what you expected vs. what occurred.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: Smallest code snippet that demonstrates the issue.
+      render: csharp
+    validations:
+      required: true
+
+  - type: textarea
+    id: stack
+    attributes:
+      label: Exception / stack trace
+      description: If applicable.
+      render: text

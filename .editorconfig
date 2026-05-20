@@ -1,0 +1,46 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{yml,yaml,json,md}]
+indent_size = 2
+
+[*.{csproj,props,targets}]
+indent_size = 2
+
+[*.cs]
+# File-scoped namespaces required.
+csharp_style_namespace_declarations = file_scoped:error
+
+# Stylistic IDE rules — surfaced as suggestions in IDEs; never block builds.
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+csharp_prefer_braces = true:suggestion
+csharp_style_expression_bodied_methods = when_on_single_line:silent
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_throw_expression = true:suggestion
+csharp_style_conditional_delegate_call = true:suggestion
+
+# Explicitly demote noisy IDE diagnostics so TreatWarningsAsErrors doesn't fail the build on style.
+dotnet_diagnostic.IDE0007.severity = suggestion
+dotnet_diagnostic.IDE0008.severity = suggestion
+dotnet_diagnostic.IDE0011.severity = suggestion
+dotnet_diagnostic.IDE0047.severity = suggestion
+dotnet_diagnostic.IDE0048.severity = suggestion
+dotnet_diagnostic.IDE0305.severity = suggestion
+
+# Public APIs must be documented (escalated to error for packable projects via Directory.Build.props).
+dotnet_diagnostic.CS1591.severity = warning
+
+# Test conventions — underscores in method names are idiomatic for test fixtures.
+[tests/**/*.cs]
+dotnet_diagnostic.CA1707.severity = none
