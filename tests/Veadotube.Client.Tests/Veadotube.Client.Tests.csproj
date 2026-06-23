@@ -7,6 +7,8 @@
     <OutputType>Exe</OutputType>
     <EnableMSTestRunner>true</EnableMSTestRunner>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- IDE0005 (remove unnecessary usings) requires doc-gen to run on build; not worth it for tests. -->
+    <NoWarn>$(NoWarn);IDE0005</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

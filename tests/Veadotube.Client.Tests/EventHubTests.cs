@@ -14,7 +14,7 @@ public sealed class EventHubTests
         string? received = null;
         using VeadotubeEventHub.Subscription _ = hub.On<StateChangedEventPayload>(p => received = p.State);
 
-        JsonElement payload = JsonDocument.Parse("""{"event":"peek","state":"awake"}""").RootElement;
+        JsonElement payload = JsonElement.Parse("""{"event":"peek","state":"awake"}""");
         hub.Dispatch("stateEvents.peek", payload);
 
         Assert.AreEqual("awake", received);
@@ -27,7 +27,7 @@ public sealed class EventHubTests
         bool fired = false;
         using VeadotubeEventHub.Subscription _ = hub.On<StateChangedEventPayload>(_ => fired = true);
 
-        JsonElement payload = JsonDocument.Parse("""{"event":"get","value":true}""").RootElement;
+        JsonElement payload = JsonElement.Parse("""{"event":"get","value":true}""");
         hub.Dispatch("boolean.get", payload);
 
         Assert.IsFalse(fired);
@@ -40,7 +40,7 @@ public sealed class EventHubTests
         int hits = 0;
         VeadotubeEventHub.Subscription sub = hub.On<StateChangedEventPayload>(_ => hits++);
 
-        JsonElement payload = JsonDocument.Parse("""{"event":"peek","state":"a"}""").RootElement;
+        JsonElement payload = JsonElement.Parse("""{"event":"peek","state":"a"}""");
         hub.Dispatch("stateEvents.peek", payload);
         sub.Dispose();
         hub.Dispatch("stateEvents.peek", payload);

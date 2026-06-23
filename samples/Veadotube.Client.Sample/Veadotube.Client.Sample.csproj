@@ -8,6 +8,8 @@
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Non-shipped smoke-test app: don't gate the build on IDE code-style rules. -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>

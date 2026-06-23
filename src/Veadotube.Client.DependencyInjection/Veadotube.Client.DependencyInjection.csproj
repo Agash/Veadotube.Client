@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
@@ -11,6 +11,8 @@
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- DI extension methods live in the consumer-facing Veadotube.Client namespace by convention. -->
+    <NoWarn>$(NoWarn);IDE0130</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
