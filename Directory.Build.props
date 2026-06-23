@@ -17,7 +17,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Agash/Veadotube.Client</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Agash/Veadotube.Client</PackageProjectUrl>
-    <GenerateDocumentationFile Condition="'$(IsPackable)' == 'true'">true</GenerateDocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <WarningsAsErrors Condition="'$(IsPackable)' == 'true'">$(WarningsAsErrors);CS1591</WarningsAsErrors>
   </PropertyGroup>
 

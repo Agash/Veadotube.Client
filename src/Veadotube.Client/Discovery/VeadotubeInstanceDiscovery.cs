@@ -1,4 +1,3 @@
-using System.IO;
 using System.Text.Json;
 using Veadotube.Client.Serialization;
 
@@ -38,9 +37,21 @@ public static class VeadotubeInstanceDiscovery
         foreach (string path in Directory.EnumerateFiles(dir))
         {
             VeadotubeInstanceInfo? parsed = TryReadOne(path);
-            if (parsed is null) continue;
-            if (nowUnixSeconds - parsed.Time > maxAge) continue;
-            if (!string.IsNullOrEmpty(typeFilter) && !string.Equals(parsed.InstanceType, typeFilter, StringComparison.Ordinal)) continue;
+            if (parsed is null)
+            {
+                continue;
+            }
+
+            if (nowUnixSeconds - parsed.Time > maxAge)
+            {
+                continue;
+            }
+
+            if (!string.IsNullOrEmpty(typeFilter) && !string.Equals(parsed.InstanceType, typeFilter, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
             result.Add(parsed);
         }
 

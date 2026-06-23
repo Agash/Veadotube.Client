@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
-using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -52,7 +51,11 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
     public async Task ConnectAsync(CancellationToken ct = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (IsConnected) return;
+        if (IsConnected)
+        {
+            return;
+        }
+
         _ws = new ClientWebSocket();
         try
         {
@@ -69,7 +72,11 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
     /// <summary>Closes the WebSocket transport cleanly.</summary>
     public async Task DisconnectAsync(CancellationToken ct = default)
     {
-        if (_loopCts is null) return;
+        if (_loopCts is null)
+        {
+            return;
+        }
+
         try { await _loopCts.CancelAsync().ConfigureAwait(false); }
         catch (ObjectDisposedException) { }
 
@@ -92,7 +99,11 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
     /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         _disposed = true;
         try { await DisconnectAsync(CancellationToken.None).ConfigureAwait(false); }
         catch (VeadotubeException) { }
@@ -237,10 +248,20 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
                 catch (OperationCanceledException) { break; }
                 catch (WebSocketException) { break; }
 
-                if (result.MessageType == WebSocketMessageType.Close) break;
-                if (result.Count > 0) pending.Write(buffer, 0, result.Count);
+                if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    break;
+                }
 
-                if (!result.EndOfMessage) continue;
+                if (result.Count > 0)
+                {
+                    pending.Write(buffer, 0, result.Count);
+                }
+
+                if (!result.EndOfMessage)
+                {
+                    continue;
+                }
 
                 try
                 {
@@ -260,7 +281,11 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
 
     private void DispatchMessage(JsonElement root)
     {
-        if (root.ValueKind != JsonValueKind.Object) return;
+        if (root.ValueKind != JsonValueKind.Object)
+        {
+            return;
+        }
+
         if (root.TryGetProperty(VeadotubeApi.NodesChannel, out JsonElement nodesBody))
         {
             DispatchNodesMessage(nodesBody);
@@ -273,7 +298,11 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
 
     private void DispatchInstanceMessage(JsonElement body)
     {
-        if (!body.TryGetProperty("event", out JsonElement evtProp)) return;
+        if (!body.TryGetProperty("event", out JsonElement evtProp))
+        {
+            return;
+        }
+
         string evt = evtProp.GetString() ?? string.Empty;
         Events.Dispatch($"instance.{evt}", body);
         Resolve($"{VeadotubeApi.InstanceChannel}.{evt}", body);
@@ -281,7 +310,11 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
 
     private void DispatchNodesMessage(JsonElement body)
     {
-        if (!body.TryGetProperty("event", out JsonElement evtProp)) return;
+        if (!body.TryGetProperty("event", out JsonElement evtProp))
+        {
+            return;
+        }
+
         string evt = evtProp.GetString() ?? string.Empty;
 
         if (string.Equals(evt, "payload", StringComparison.Ordinal))

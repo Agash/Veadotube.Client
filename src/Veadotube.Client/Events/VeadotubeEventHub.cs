@@ -21,7 +21,10 @@ public sealed class VeadotubeEventHub
         return OnCore(TPayload.EventName, json =>
         {
             TPayload? typed = json.Deserialize(TPayload.JsonTypeInfo);
-            if (typed is not null) handler(typed);
+            if (typed is not null)
+            {
+                handler(typed);
+            }
         });
     }
 
@@ -59,7 +62,10 @@ public sealed class VeadotubeEventHub
     public sealed class Subscription : IDisposable
     {
         private Action? _dispose;
-        internal Subscription(Action dispose) => _dispose = dispose;
+        internal Subscription(Action dispose)
+        {
+            _dispose = dispose;
+        }
         /// <inheritdoc />
         public void Dispose()
         {
