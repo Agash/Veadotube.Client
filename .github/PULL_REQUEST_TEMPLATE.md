@@ -9,3 +9,10 @@
 ## Related
 
 <!-- Closes #..., refs #... -->
+
+## Checklist
+
+- [ ] `dotnet build` is clean (warnings are errors in this repo)
+- [ ] `dotnet test` passes
+- [ ] Public API changes are documented with XML comments
+- [ ] Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
