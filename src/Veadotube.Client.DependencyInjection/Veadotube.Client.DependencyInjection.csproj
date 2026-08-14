@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
@@ -9,7 +9,6 @@
     <Description>DI extensions for Veadotube.Client. Registers the client and its options in Microsoft.Extensions.DependencyInjection.</Description>
     <PackageTags>veadotube;client;di;ioc</PackageTags>
     <MinVerTagPrefix>v</MinVerTagPrefix>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- DI extension methods live in the consumer-facing Veadotube.Client namespace by convention. -->
     <NoWarn>$(NoWarn);IDE0130</NoWarn>

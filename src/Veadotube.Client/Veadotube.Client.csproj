@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
@@ -9,7 +9,6 @@
     <Description>Modern .NET 10 / C# 14 client library for the veadotube WebSocket API. Covers the documented instance + nodes channels and all built-in node types (boolean, number, stateEvents). AOT-friendly, System.Text.Json source-generated, fully typed.</Description>
     <PackageTags>veadotube;vtuber;pngtuber;client;websocket;stj</PackageTags>
     <MinVerTagPrefix>v</MinVerTagPrefix>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
