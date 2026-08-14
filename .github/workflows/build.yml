@@ -88,14 +88,6 @@ jobs:
         PY
 
     - name: Upload coverage report
-      if: always()
-      uses: actions/upload-artifact@v7
-      with:
-        name: coverage
-        if-no-files-found: warn
-        path: '**/coverage.cobertura.xml'
-
-    - name: Upload coverage report
       uses: actions/upload-artifact@v7
       with:
         name: coverage
