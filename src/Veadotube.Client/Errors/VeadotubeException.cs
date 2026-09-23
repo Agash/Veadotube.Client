@@ -4,10 +4,12 @@ namespace Veadotube.Client.Errors;
 public sealed class VeadotubeException : Exception
 {
     /// <summary>Initialises a new instance with the supplied message.</summary>
-    public VeadotubeException(string message) : base(message) { }
+    public VeadotubeException(string message)
+        : base(message) { }
 
     /// <summary>Initialises a new instance with a message and inner exception.</summary>
-    public VeadotubeException(string message, Exception innerException) : base(message, innerException) { }
+    public VeadotubeException(string message, Exception innerException)
+        : base(message, innerException) { }
 
     /// <summary>Initialises a new instance without arguments.</summary>
     public VeadotubeException() { }

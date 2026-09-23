@@ -6,31 +6,36 @@ namespace Veadotube.Client.Messages;
 public sealed record BooleanGetRequest
 {
     /// <summary>Always <c>"get"</c>.</summary>
-    [JsonPropertyName("event")] public string Event { get; init; } = "get";
+    [JsonPropertyName("event")]
+    public string Event { get; init; } = "get";
 }
 
 /// <summary>Set-value request for a <c>boolean</c> node.</summary>
 public sealed record BooleanSetRequest
 {
     /// <summary>Always <c>"set"</c>.</summary>
-    [JsonPropertyName("event")] public string Event { get; init; } = "set";
+    [JsonPropertyName("event")]
+    public string Event { get; init; } = "set";
 
     /// <summary>Target value.</summary>
-    [JsonPropertyName("value")] public required bool Value { get; init; }
+    [JsonPropertyName("value")]
+    public required bool Value { get; init; }
 }
 
 /// <summary>Toggle the current value of a <c>boolean</c> node.</summary>
 public sealed record BooleanToggleRequest
 {
     /// <summary>Always <c>"toggle"</c>.</summary>
-    [JsonPropertyName("event")] public string Event { get; init; } = "toggle";
+    [JsonPropertyName("event")]
+    public string Event { get; init; } = "toggle";
 }
 
 /// <summary>Clear the node's value back to the unset state.</summary>
 public sealed record BooleanClearRequest
 {
     /// <summary>Always <c>"clear"</c>.</summary>
-    [JsonPropertyName("event")] public string Event { get; init; } = "clear";
+    [JsonPropertyName("event")]
+    public string Event { get; init; } = "clear";
 }
 
 /// <summary>
@@ -41,5 +46,6 @@ public sealed record BooleanClearRequest
 public sealed record BooleanValueResponse
 {
     /// <summary>The current value, or <c>null</c> when the server reports the node as unset.</summary>
-    [JsonPropertyName("value")] public bool? Value { get; init; }
+    [JsonPropertyName("value")]
+    public bool? Value { get; init; }
 }

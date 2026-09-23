@@ -12,19 +12,24 @@ namespace Veadotube.Client.Messages;
 public sealed record NodePayloadEnvelope
 {
     /// <summary>Always <c>"payload"</c>.</summary>
-    [JsonPropertyName("event")] public string Event { get; init; } = "payload";
+    [JsonPropertyName("event")]
+    public string Event { get; init; } = "payload";
 
     /// <summary>Node type — one of the <see cref="VeadotubeApi"/> node-type constants.</summary>
-    [JsonPropertyName("type")] public required string Type { get; init; }
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
 
     /// <summary>Target node id within the instance.</summary>
-    [JsonPropertyName("id")] public required string Id { get; init; }
+    [JsonPropertyName("id")]
+    public required string Id { get; init; }
 
     /// <summary>Optional display name (echoed by the server in responses).</summary>
-    [JsonPropertyName("name")] public string? Name { get; init; }
+    [JsonPropertyName("name")]
+    public string? Name { get; init; }
 
     /// <summary>The inner per-node payload. Deserialise into the node-type-specific record (e.g. <c>StateEventsPayload</c>).</summary>
-    [JsonPropertyName("payload")] public JsonElement Payload { get; init; }
+    [JsonPropertyName("payload")]
+    public JsonElement Payload { get; init; }
 }
 
 /// <summary>
@@ -34,8 +39,10 @@ public sealed record NodePayloadEnvelope
 public sealed record NodeListenPayload
 {
     /// <summary>One of <c>"listen"</c> or <c>"unlisten"</c>.</summary>
-    [JsonPropertyName("event")] public required string Event { get; init; }
+    [JsonPropertyName("event")]
+    public required string Event { get; init; }
 
     /// <summary>Subscription token; must match between paired listen/unlisten.</summary>
-    [JsonPropertyName("token")] public string? Token { get; init; }
+    [JsonPropertyName("token")]
+    public string? Token { get; init; }
 }

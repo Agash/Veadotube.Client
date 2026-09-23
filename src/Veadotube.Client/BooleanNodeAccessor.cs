@@ -17,46 +17,64 @@ public sealed class BooleanNodeAccessor
     }
 
     /// <summary>Reads the node's current value.</summary>
-    public Task<BooleanValueResponse> GetAsync(CancellationToken ct = default)
-        => _client.RequestNodeAsync(
-            VeadotubeApi.BooleanNodeType, _nodeId,
+    public Task<BooleanValueResponse> GetAsync(CancellationToken ct = default) =>
+        _client.RequestNodeAsync(
+            VeadotubeApi.BooleanNodeType,
+            _nodeId,
             new BooleanGetRequest(),
             VeadotubeJsonContext.Default.BooleanGetRequest,
             VeadotubeJsonContext.Default.BooleanValueResponse,
-            "get", ct);
+            "get",
+            ct
+        );
 
     /// <summary>Sets the node's value.</summary>
-    public Task SetAsync(bool value, CancellationToken ct = default)
-        => _client.SendNodePayloadAsync(
-            VeadotubeApi.BooleanNodeType, _nodeId,
+    public Task SetAsync(bool value, CancellationToken ct = default) =>
+        _client.SendNodePayloadAsync(
+            VeadotubeApi.BooleanNodeType,
+            _nodeId,
             new BooleanSetRequest { Value = value },
-            VeadotubeJsonContext.Default.BooleanSetRequest, ct);
+            VeadotubeJsonContext.Default.BooleanSetRequest,
+            ct
+        );
 
     /// <summary>Inverts the node's value.</summary>
-    public Task ToggleAsync(CancellationToken ct = default)
-        => _client.SendNodePayloadAsync(
-            VeadotubeApi.BooleanNodeType, _nodeId,
+    public Task ToggleAsync(CancellationToken ct = default) =>
+        _client.SendNodePayloadAsync(
+            VeadotubeApi.BooleanNodeType,
+            _nodeId,
             new BooleanToggleRequest(),
-            VeadotubeJsonContext.Default.BooleanToggleRequest, ct);
+            VeadotubeJsonContext.Default.BooleanToggleRequest,
+            ct
+        );
 
     /// <summary>Clears the node back to the unset state.</summary>
-    public Task ClearAsync(CancellationToken ct = default)
-        => _client.SendNodePayloadAsync(
-            VeadotubeApi.BooleanNodeType, _nodeId,
+    public Task ClearAsync(CancellationToken ct = default) =>
+        _client.SendNodePayloadAsync(
+            VeadotubeApi.BooleanNodeType,
+            _nodeId,
             new BooleanClearRequest(),
-            VeadotubeJsonContext.Default.BooleanClearRequest, ct);
+            VeadotubeJsonContext.Default.BooleanClearRequest,
+            ct
+        );
 
     /// <summary>Subscribes to value-change pushes (the matching unlisten uses the same <paramref name="token"/>).</summary>
-    public Task ListenAsync(string? token = null, CancellationToken ct = default)
-        => _client.SendNodePayloadAsync(
-            VeadotubeApi.BooleanNodeType, _nodeId,
+    public Task ListenAsync(string? token = null, CancellationToken ct = default) =>
+        _client.SendNodePayloadAsync(
+            VeadotubeApi.BooleanNodeType,
+            _nodeId,
             new NodeListenPayload { Event = "listen", Token = token },
-            VeadotubeJsonContext.Default.NodeListenPayload, ct);
+            VeadotubeJsonContext.Default.NodeListenPayload,
+            ct
+        );
 
     /// <summary>Cancels a previously-issued listen.</summary>
-    public Task UnlistenAsync(string? token = null, CancellationToken ct = default)
-        => _client.SendNodePayloadAsync(
-            VeadotubeApi.BooleanNodeType, _nodeId,
+    public Task UnlistenAsync(string? token = null, CancellationToken ct = default) =>
+        _client.SendNodePayloadAsync(
+            VeadotubeApi.BooleanNodeType,
+            _nodeId,
             new NodeListenPayload { Event = "unlisten", Token = token },
-            VeadotubeJsonContext.Default.NodeListenPayload, ct);
+            VeadotubeJsonContext.Default.NodeListenPayload,
+            ct
+        );
 }

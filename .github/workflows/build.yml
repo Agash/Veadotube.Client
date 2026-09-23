@@ -45,6 +45,11 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore Veadotube.Client.slnx
 
+    - name: Check formatting
+      run: |
+        dotnet tool restore
+        dotnet csharpier check .
+
     - name: Build solution
       run: dotnet build Veadotube.Client.slnx --configuration Release --no-restore
 
