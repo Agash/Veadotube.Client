@@ -1,26 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <!-- The runtime pack is what a self-contained/AOT publish resolves, and the graph flags any
-         10.0.10 or older. Pin the serviced patch so the sample does not carry a known advisory. -->
-    <RuntimeFrameworkVersion Condition="'$(TargetFramework)' == 'net10.0'"
-      >10.0.11</RuntimeFrameworkVersion>
+    <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <RootNamespace>Veadotube.Client.Sample</RootNamespace>
     <IsPackable>false</IsPackable>
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Non-shipped smoke-test app: don't gate the build on IDE code-style rules. -->
-    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Veadotube.Client\Veadotube.Client.csproj" />
     <ProjectReference Include="..\..\src\Veadotube.Client.DependencyInjection\Veadotube.Client.DependencyInjection.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Spectre.Console" />
   </ItemGroup>
 </Project>
