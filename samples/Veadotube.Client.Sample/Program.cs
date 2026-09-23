@@ -164,18 +164,22 @@ while (true)
     }
 }
 
-static NodeListEntry PickStateNode(NodeListResponse nodes) =>
-    AnsiConsole.Prompt(
+static NodeListEntry PickStateNode(NodeListResponse nodes)
+{
+    return AnsiConsole.Prompt(
         new SelectionPrompt<NodeListEntry>()
             .Title("which stateEvents node?")
             .UseConverter(n => $"{n.Type} {n.Id}")
             .AddChoices(nodes.Entries.Where(e => e.Type == "stateEvents"))
     );
+}
 
-static NodeListEntry PickBooleanNode(NodeListResponse nodes) =>
-    AnsiConsole.Prompt(
+static NodeListEntry PickBooleanNode(NodeListResponse nodes)
+{
+    return AnsiConsole.Prompt(
         new SelectionPrompt<NodeListEntry>()
             .Title("which boolean node?")
             .UseConverter(n => $"{n.Type} {n.Id}")
             .AddChoices(nodes.Entries.Where(e => e.Type == "boolean"))
     );
+}
