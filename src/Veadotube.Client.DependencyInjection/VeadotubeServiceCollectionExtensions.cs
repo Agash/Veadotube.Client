@@ -12,7 +12,10 @@ public static class VeadotubeServiceCollectionExtensions
     /// Registers a singleton <see cref="VeadotubeClient"/> wired against the supplied
     /// <see cref="VeadotubeClientOptions"/>.
     /// </summary>
-    public static IServiceCollection AddVeadotubeClient(this IServiceCollection services, Action<VeadotubeClientOptions>? configure = null)
+    public static IServiceCollection AddVeadotubeClient(
+        this IServiceCollection services,
+        Action<VeadotubeClientOptions>? configure = null
+    )
     {
         ArgumentNullException.ThrowIfNull(services);
         if (configure is not null)
@@ -21,7 +24,9 @@ public static class VeadotubeServiceCollectionExtensions
         }
         services.TryAddSingleton(sp =>
         {
-            VeadotubeClientOptions options = sp.GetService<IOptions<VeadotubeClientOptions>>()?.Value ?? new VeadotubeClientOptions();
+            VeadotubeClientOptions options =
+                sp.GetService<IOptions<VeadotubeClientOptions>>()?.Value
+                ?? new VeadotubeClientOptions();
             ILogger<VeadotubeClient>? logger = sp.GetService<ILogger<VeadotubeClient>>();
             return new VeadotubeClient(options, logger);
         });

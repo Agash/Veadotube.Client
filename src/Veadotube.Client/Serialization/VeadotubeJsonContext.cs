@@ -9,7 +9,8 @@ namespace Veadotube.Client.Serialization;
 /// <summary>Source-generated <see cref="JsonSerializerContext"/> covering every type the library serialises.</summary>
 [JsonSourceGenerationOptions(
     PropertyNameCaseInsensitive = true,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+)]
 [JsonSerializable(typeof(JsonElement))]
 [JsonSerializable(typeof(VeadotubeInstanceInfo))]
 [JsonSerializable(typeof(InstanceInfoRequest))]
@@ -60,7 +61,8 @@ public sealed partial class VeadotubeJsonContext : JsonSerializerContext;
 public sealed record NodeChannelMessage
 {
     /// <summary>Payload sent over the <c>nodes</c> channel.</summary>
-    [JsonPropertyName(VeadotubeApi.NodesChannel)] public JsonElement Nodes { get; init; }
+    [JsonPropertyName(VeadotubeApi.NodesChannel)]
+    public JsonElement Nodes { get; init; }
 }
 
 /// <summary>
@@ -70,5 +72,6 @@ public sealed record NodeChannelMessage
 public sealed record InstanceChannelMessage
 {
     /// <summary>Payload sent over the <c>instance</c> channel.</summary>
-    [JsonPropertyName(VeadotubeApi.InstanceChannel)] public JsonElement Instance { get; init; }
+    [JsonPropertyName(VeadotubeApi.InstanceChannel)]
+    public JsonElement Instance { get; init; }
 }

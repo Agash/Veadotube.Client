@@ -22,7 +22,8 @@
     <RepositoryUrl>https://github.com/Agash/Veadotube.Client</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Agash/Veadotube.Client</PackageProjectUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <WarningsAsErrors Condition="'$(IsPackable)' == 'true'">$(WarningsAsErrors);CS1591</WarningsAsErrors>
+    <WarningsAsErrors Condition="'$(IsPackable)' == 'true'"
+      >$(WarningsAsErrors);CS1591</WarningsAsErrors>
   </PropertyGroup>
 
   <!-- Directory.Build.props is evaluated before per-project IsPackable is set, so condition the
@@ -32,6 +33,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Visible="false" Condition="Exists('$(MSBuildThisFileDirectory)README.md')" />
+    <None
+      Include="$(MSBuildThisFileDirectory)README.md"
+      Pack="true"
+      PackagePath="\"
+      Visible="false"
+      Condition="Exists('$(MSBuildThisFileDirectory)README.md')"
+    />
   </ItemGroup>
 </Project>

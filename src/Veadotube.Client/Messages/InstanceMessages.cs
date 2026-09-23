@@ -6,7 +6,8 @@ namespace Veadotube.Client.Messages;
 public sealed record InstanceInfoRequest
 {
     /// <summary>Always <c>"info"</c>.</summary>
-    [JsonPropertyName("event")] public string Event { get; init; } = "info";
+    [JsonPropertyName("event")]
+    public string Event { get; init; } = "info";
 }
 
 /// <summary>
@@ -17,20 +18,26 @@ public sealed record InstanceInfoRequest
 public sealed record InstanceInfoResponse
 {
     /// <summary>Always <c>"info"</c>.</summary>
-    [JsonPropertyName("event")] public string Event { get; init; } = "info";
+    [JsonPropertyName("event")]
+    public string Event { get; init; } = "info";
 
     /// <summary>Instance display name (e.g. <c>"veadotube mini"</c>).</summary>
-    [JsonPropertyName("name")] public string Name { get; init; } = string.Empty;
+    [JsonPropertyName("name")]
+    public string Name { get; init; } = string.Empty;
 
     /// <summary>Unique instance id.</summary>
-    [JsonPropertyName("id")] public string Id { get; init; } = string.Empty;
+    [JsonPropertyName("id")]
+    public string Id { get; init; } = string.Empty;
 
     /// <summary>veadotube version string.</summary>
-    [JsonPropertyName("version")] public string Version { get; init; } = string.Empty;
+    [JsonPropertyName("version")]
+    public string Version { get; init; } = string.Empty;
 
     /// <summary>UI locale code (e.g. <c>"en"</c>).</summary>
-    [JsonPropertyName("language")] public string Language { get; init; } = string.Empty;
+    [JsonPropertyName("language")]
+    public string Language { get; init; } = string.Empty;
 
     /// <summary>Server endpoint (<c>host:port</c>).</summary>
-    [JsonPropertyName("server")] public string Server { get; init; } = string.Empty;
+    [JsonPropertyName("server")]
+    public string Server { get; init; } = string.Empty;
 }

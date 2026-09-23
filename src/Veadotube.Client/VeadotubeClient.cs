@@ -19,7 +19,10 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
 {
     private readonly VeadotubeClientOptions _options;
     private readonly ILogger<VeadotubeClient> _logger;
-    private readonly ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource<JsonElement>>> _pending = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<
+        string,
+        ConcurrentQueue<TaskCompletionSource<JsonElement>>
+    > _pending = new(StringComparer.Ordinal);
     private readonly SemaphoreSlim _sendLock = new(1, 1);
 
     private ClientWebSocket? _ws;
@@ -61,9 +64,17 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
         {
             await _ws.ConnectAsync(_options.Endpoint, ct).ConfigureAwait(false);
         }
-        catch (Exception ex) when (ex is WebSocketException or InvalidOperationException or OperationCanceledException)
+        catch (Exception ex)
+            when (ex
+                    is WebSocketException
+                        or InvalidOperationException
+                        or OperationCanceledException
+            )
         {
-            throw new VeadotubeException($"Failed to connect to veadotube at {_options.Endpoint}.", ex);
+            throw new VeadotubeException(
+                $"Failed to connect to veadotube at {_options.Endpoint}.",
+                ex
+            );
         }
         _loopCts = new CancellationTokenSource();
         _receiveLoop = Task.Run(() => ReceiveLoopAsync(_loopCts.Token), CancellationToken.None);
@@ -77,19 +88,29 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
             return;
         }
 
-        try { await _loopCts.CancelAsync().ConfigureAwait(false); }
+        try
+        {
+            await _loopCts.CancelAsync().ConfigureAwait(false);
+        }
         catch (ObjectDisposedException) { }
 
         if (_ws is { State: WebSocketState.Open })
         {
-            try { await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "client closing", ct).ConfigureAwait(false); }
+            try
+            {
+                await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "client closing", ct)
+                    .ConfigureAwait(false);
+            }
             catch (WebSocketException) { }
             catch (OperationCanceledException) { }
         }
 
         if (_receiveLoop is not null)
         {
-            try { await _receiveLoop.ConfigureAwait(false); }
+            try
+            {
+                await _receiveLoop.ConfigureAwait(false);
+            }
             catch (OperationCanceledException) { }
         }
 
@@ -105,7 +126,10 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
         }
 
         _disposed = true;
-        try { await DisconnectAsync(CancellationToken.None).ConfigureAwait(false); }
+        try
+        {
+            await DisconnectAsync(CancellationToken.None).ConfigureAwait(false);
+        }
         catch (VeadotubeException) { }
         _sendLock.Dispose();
     }
@@ -117,9 +141,15 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
     {
         string key = $"{VeadotubeApi.InstanceChannel}.info";
         Task<JsonElement> waiter = RegisterWaiter(key);
-        await SendInstanceAsync(new InstanceInfoRequest(), VeadotubeJsonContext.Default.InstanceInfoRequest, ct).ConfigureAwait(false);
+        await SendInstanceAsync(
+                new InstanceInfoRequest(),
+                VeadotubeJsonContext.Default.InstanceInfoRequest,
+                ct
+            )
+            .ConfigureAwait(false);
         JsonElement raw = await AwaitWithTimeout(waiter, ct).ConfigureAwait(false);
-        return raw.Deserialize(VeadotubeJsonContext.Default.InstanceInfoResponse) ?? throw new VeadotubeException("Empty instance info response.");
+        return raw.Deserialize(VeadotubeJsonContext.Default.InstanceInfoResponse)
+            ?? throw new VeadotubeException("Empty instance info response.");
     }
 
     // ----- Nodes channel — listing -------------------------------------------
@@ -129,18 +159,32 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
     {
         string key = $"{VeadotubeApi.NodesChannel}.list";
         Task<JsonElement> waiter = RegisterWaiter(key);
-        await SendNodesAsync(new NodeListRequest(), VeadotubeJsonContext.Default.NodeListRequest, ct).ConfigureAwait(false);
+        await SendNodesAsync(
+                new NodeListRequest(),
+                VeadotubeJsonContext.Default.NodeListRequest,
+                ct
+            )
+            .ConfigureAwait(false);
         JsonElement raw = await AwaitWithTimeout(waiter, ct).ConfigureAwait(false);
-        return raw.Deserialize(VeadotubeJsonContext.Default.NodeListResponse) ?? throw new VeadotubeException("Empty node-list response.");
+        return raw.Deserialize(VeadotubeJsonContext.Default.NodeListResponse)
+            ?? throw new VeadotubeException("Empty node-list response.");
     }
 
     /// <summary>Subscribes to node-list change pushes; correlate with <see cref="UnlistenNodeListAsync"/> via <paramref name="token"/>.</summary>
-    public Task ListenNodeListAsync(string? token = null, CancellationToken ct = default)
-        => SendNodesAsync(new NodeListListenRequest { Token = token }, VeadotubeJsonContext.Default.NodeListListenRequest, ct);
+    public Task ListenNodeListAsync(string? token = null, CancellationToken ct = default) =>
+        SendNodesAsync(
+            new NodeListListenRequest { Token = token },
+            VeadotubeJsonContext.Default.NodeListListenRequest,
+            ct
+        );
 
     /// <summary>Cancels a node-list subscription issued via <see cref="ListenNodeListAsync"/>.</summary>
-    public Task UnlistenNodeListAsync(string? token = null, CancellationToken ct = default)
-        => SendNodesAsync(new NodeListUnlistenRequest { Token = token }, VeadotubeJsonContext.Default.NodeListUnlistenRequest, ct);
+    public Task UnlistenNodeListAsync(string? token = null, CancellationToken ct = default) =>
+        SendNodesAsync(
+            new NodeListUnlistenRequest { Token = token },
+            VeadotubeJsonContext.Default.NodeListUnlistenRequest,
+            ct
+        );
 
     // ----- Typed node accessors ----------------------------------------------
 
@@ -156,11 +200,21 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
     // ----- Raw escape hatch --------------------------------------------------
 
     /// <summary>Sends a custom payload on the <see cref="VeadotubeApi.NodesChannel"/> channel — useful for forward-compat with future node types.</summary>
-    public Task SendRawNodePayloadAsync(string nodeType, string nodeId, JsonElement payload, CancellationToken ct = default)
+    public Task SendRawNodePayloadAsync(
+        string nodeType,
+        string nodeId,
+        JsonElement payload,
+        CancellationToken ct = default
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(nodeType);
         ArgumentException.ThrowIfNullOrWhiteSpace(nodeId);
-        NodePayloadEnvelope envelope = new() { Type = nodeType, Id = nodeId, Payload = payload };
+        NodePayloadEnvelope envelope = new()
+        {
+            Type = nodeType,
+            Id = nodeId,
+            Payload = payload,
+        };
         return SendNodesAsync(envelope, VeadotubeJsonContext.Default.NodePayloadEnvelope, ct);
     }
 
@@ -173,14 +227,17 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
         System.Text.Json.Serialization.Metadata.JsonTypeInfo<TRequest> requestInfo,
         System.Text.Json.Serialization.Metadata.JsonTypeInfo<TResponse> responseInfo,
         string expectedInnerEvent,
-        CancellationToken ct)
+        CancellationToken ct
+    )
         where TRequest : notnull
     {
         string key = $"{VeadotubeApi.NodesChannel}.{nodeType}.{nodeId}.{expectedInnerEvent}";
         Task<JsonElement> waiter = RegisterWaiter(key);
-        await SendNodePayloadAsync(nodeType, nodeId, payload, requestInfo, ct).ConfigureAwait(false);
+        await SendNodePayloadAsync(nodeType, nodeId, payload, requestInfo, ct)
+            .ConfigureAwait(false);
         JsonElement raw = await AwaitWithTimeout(waiter, ct).ConfigureAwait(false);
-        return raw.Deserialize(responseInfo) ?? throw new VeadotubeException("Empty response payload.");
+        return raw.Deserialize(responseInfo)
+            ?? throw new VeadotubeException("Empty response payload.");
     }
 
     internal Task SendNodePayloadAsync<TRequest>(
@@ -188,23 +245,38 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
         string nodeId,
         TRequest payload,
         System.Text.Json.Serialization.Metadata.JsonTypeInfo<TRequest> requestInfo,
-        CancellationToken ct) where TRequest : notnull
+        CancellationToken ct
+    )
+        where TRequest : notnull
     {
         JsonElement inner = JsonSerializer.SerializeToElement(payload, requestInfo);
-        NodePayloadEnvelope envelope = new() { Type = nodeType, Id = nodeId, Payload = inner };
+        NodePayloadEnvelope envelope = new()
+        {
+            Type = nodeType,
+            Id = nodeId,
+            Payload = inner,
+        };
         return SendNodesAsync(envelope, VeadotubeJsonContext.Default.NodePayloadEnvelope, ct);
     }
 
     // ----- Send / receive ----------------------------------------------------
 
-    private Task SendNodesAsync<T>(T payload, System.Text.Json.Serialization.Metadata.JsonTypeInfo<T> info, CancellationToken ct)
+    private Task SendNodesAsync<T>(
+        T payload,
+        System.Text.Json.Serialization.Metadata.JsonTypeInfo<T> info,
+        CancellationToken ct
+    )
         where T : notnull
     {
         JsonElement inner = JsonSerializer.SerializeToElement(payload, info);
         return SendChannelAsync(VeadotubeApi.NodesChannel, inner, ct);
     }
 
-    private Task SendInstanceAsync<T>(T payload, System.Text.Json.Serialization.Metadata.JsonTypeInfo<T> info, CancellationToken ct)
+    private Task SendInstanceAsync<T>(
+        T payload,
+        System.Text.Json.Serialization.Metadata.JsonTypeInfo<T> info,
+        CancellationToken ct
+    )
         where T : notnull
     {
         JsonElement inner = JsonSerializer.SerializeToElement(payload, info);
@@ -227,9 +299,14 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
         await _sendLock.WaitAsync(ct).ConfigureAwait(false);
         try
         {
-            await _ws!.SendAsync(bytes, WebSocketMessageType.Text, endOfMessage: true, ct).ConfigureAwait(false);
+            await _ws!
+                .SendAsync(bytes, WebSocketMessageType.Text, endOfMessage: true, ct)
+                .ConfigureAwait(false);
         }
-        finally { _ = _sendLock.Release(); }
+        finally
+        {
+            _ = _sendLock.Release();
+        }
     }
 
     private async Task ReceiveLoopAsync(CancellationToken ct)
@@ -243,10 +320,17 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
                 WebSocketReceiveResult result;
                 try
                 {
-                    result = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), ct).ConfigureAwait(false);
+                    result = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), ct)
+                        .ConfigureAwait(false);
                 }
-                catch (OperationCanceledException) { break; }
-                catch (WebSocketException) { break; }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+                catch (WebSocketException)
+                {
+                    break;
+                }
 
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
@@ -265,17 +349,31 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
 
                 try
                 {
-                    JsonDocument doc = JsonDocument.Parse(pending.GetBuffer().AsMemory(0, (int)pending.Length));
+                    JsonDocument doc = JsonDocument.Parse(
+                        pending.GetBuffer().AsMemory(0, (int)pending.Length)
+                    );
                     DispatchMessage(doc.RootElement);
                     doc.Dispose();
                 }
-                catch (JsonException ex) { LogParseError(_logger, ex); }
-                finally { pending.SetLength(0); }
+                catch (JsonException ex)
+                {
+                    LogParseError(_logger, ex);
+                }
+                finally
+                {
+                    pending.SetLength(0);
+                }
             }
         }
         finally
         {
-            try { Disconnected?.Invoke(this, EventArgs.Empty); } catch { /* swallow */ }
+            try
+            {
+                Disconnected?.Invoke(this, EventArgs.Empty);
+            }
+            catch
+            { /* swallow */
+            }
         }
     }
 
@@ -319,13 +417,19 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
 
         if (string.Equals(evt, "payload", StringComparison.Ordinal))
         {
-            if (!body.TryGetProperty("type", out JsonElement typeProp) || !body.TryGetProperty("id", out JsonElement idProp) || !body.TryGetProperty("payload", out JsonElement payloadElem))
+            if (
+                !body.TryGetProperty("type", out JsonElement typeProp)
+                || !body.TryGetProperty("id", out JsonElement idProp)
+                || !body.TryGetProperty("payload", out JsonElement payloadElem)
+            )
             {
                 return;
             }
             string nodeType = typeProp.GetString() ?? string.Empty;
             string nodeId = idProp.GetString() ?? string.Empty;
-            string innerEvent = payloadElem.TryGetProperty("event", out JsonElement innerEvtProp) ? innerEvtProp.GetString() ?? string.Empty : string.Empty;
+            string innerEvent = payloadElem.TryGetProperty("event", out JsonElement innerEvtProp)
+                ? innerEvtProp.GetString() ?? string.Empty
+                : string.Empty;
 
             Events.Dispatch($"{nodeType}.{innerEvent}", payloadElem);
             Resolve($"{VeadotubeApi.NodesChannel}.{nodeType}.{nodeId}.{innerEvent}", payloadElem);
@@ -339,15 +443,23 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
 
     private Task<JsonElement> RegisterWaiter(string key)
     {
-        TaskCompletionSource<JsonElement> tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        ConcurrentQueue<TaskCompletionSource<JsonElement>> queue = _pending.GetOrAdd(key, _ => new ConcurrentQueue<TaskCompletionSource<JsonElement>>());
+        TaskCompletionSource<JsonElement> tcs = new(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
+        ConcurrentQueue<TaskCompletionSource<JsonElement>> queue = _pending.GetOrAdd(
+            key,
+            _ => new ConcurrentQueue<TaskCompletionSource<JsonElement>>()
+        );
         queue.Enqueue(tcs);
         return tcs.Task;
     }
 
     private void Resolve(string key, JsonElement payload)
     {
-        if (_pending.TryGetValue(key, out ConcurrentQueue<TaskCompletionSource<JsonElement>>? queue) && queue.TryDequeue(out TaskCompletionSource<JsonElement>? tcs))
+        if (
+            _pending.TryGetValue(key, out ConcurrentQueue<TaskCompletionSource<JsonElement>>? queue)
+            && queue.TryDequeue(out TaskCompletionSource<JsonElement>? tcs)
+        )
         {
             _ = tcs.TrySetResult(payload);
         }
@@ -356,14 +468,19 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
     private async Task<JsonElement> AwaitWithTimeout(Task<JsonElement> waiter, CancellationToken ct)
     {
         using CancellationTokenSource timeoutCts = new(_options.RequestTimeout);
-        using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, timeoutCts.Token);
+        using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+            ct,
+            timeoutCts.Token
+        );
         try
         {
             return await waiter.WaitAsync(linkedCts.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (timeoutCts.IsCancellationRequested)
         {
-            throw new VeadotubeException($"Timed out after {_options.RequestTimeout.TotalSeconds:0.#}s waiting for a veadotube response.");
+            throw new VeadotubeException(
+                $"Timed out after {_options.RequestTimeout.TotalSeconds:0.#}s waiting for a veadotube response."
+            );
         }
     }
 
@@ -377,21 +494,44 @@ public sealed partial class VeadotubeClient : IAsyncDisposable
 
     private void Cleanup()
     {
-        try { _ws?.Dispose(); } catch { /* swallow */ }
+        try
+        {
+            _ws?.Dispose();
+        }
+        catch
+        { /* swallow */
+        }
         _ws = null;
-        try { _loopCts?.Dispose(); } catch { /* swallow */ }
+        try
+        {
+            _loopCts?.Dispose();
+        }
+        catch
+        { /* swallow */
+        }
         _loopCts = null;
         _receiveLoop = null;
-        foreach (KeyValuePair<string, ConcurrentQueue<TaskCompletionSource<JsonElement>>> entry in _pending)
+        foreach (
+            KeyValuePair<
+                string,
+                ConcurrentQueue<TaskCompletionSource<JsonElement>>
+            > entry in _pending
+        )
         {
             while (entry.Value.TryDequeue(out TaskCompletionSource<JsonElement>? tcs))
             {
-                _ = tcs.TrySetException(new VeadotubeException("Connection closed before response arrived."));
+                _ = tcs.TrySetException(
+                    new VeadotubeException("Connection closed before response arrived.")
+                );
             }
         }
         _pending.Clear();
     }
 
-    [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "Failed to parse incoming veadotube message.")]
+    [LoggerMessage(
+        EventId = 1,
+        Level = LogLevel.Warning,
+        Message = "Failed to parse incoming veadotube message."
+    )]
     private static partial void LogParseError(ILogger logger, Exception ex);
 }

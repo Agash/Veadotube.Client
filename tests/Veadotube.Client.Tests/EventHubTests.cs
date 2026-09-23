@@ -12,7 +12,9 @@ public sealed class EventHubTests
     {
         VeadotubeEventHub hub = new();
         string? received = null;
-        using VeadotubeEventHub.Subscription _ = hub.On<StateChangedEventPayload>(p => received = p.State);
+        using VeadotubeEventHub.Subscription _ = hub.On<StateChangedEventPayload>(p =>
+            received = p.State
+        );
 
         JsonElement payload = JsonElement.Parse("""{"event":"peek","state":"awake"}""");
         hub.Dispatch("stateEvents.peek", payload);
@@ -25,7 +27,9 @@ public sealed class EventHubTests
     {
         VeadotubeEventHub hub = new();
         bool fired = false;
-        using VeadotubeEventHub.Subscription _ = hub.On<StateChangedEventPayload>(_ => fired = true);
+        using VeadotubeEventHub.Subscription _ = hub.On<StateChangedEventPayload>(_ =>
+            fired = true
+        );
 
         JsonElement payload = JsonElement.Parse("""{"event":"get","value":true}""");
         hub.Dispatch("boolean.get", payload);

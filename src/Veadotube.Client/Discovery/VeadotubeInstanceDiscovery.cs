@@ -47,7 +47,10 @@ public static class VeadotubeInstanceDiscovery
                 continue;
             }
 
-            if (!string.IsNullOrEmpty(typeFilter) && !string.Equals(parsed.InstanceType, typeFilter, StringComparison.Ordinal))
+            if (
+                !string.IsNullOrEmpty(typeFilter)
+                && !string.Equals(parsed.InstanceType, typeFilter, StringComparison.Ordinal)
+            )
             {
                 continue;
             }
@@ -70,10 +73,22 @@ public static class VeadotubeInstanceDiscovery
         try
         {
             string text = File.ReadAllText(path);
-            return JsonSerializer.Deserialize(text, VeadotubeJsonContext.Default.VeadotubeInstanceInfo);
+            return JsonSerializer.Deserialize(
+                text,
+                VeadotubeJsonContext.Default.VeadotubeInstanceInfo
+            );
         }
-        catch (IOException) { return null; }
-        catch (JsonException) { return null; }
-        catch (UnauthorizedAccessException) { return null; }
+        catch (IOException)
+        {
+            return null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return null;
+        }
     }
 }

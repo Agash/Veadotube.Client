@@ -11,30 +11,43 @@ AnsiConsole.MarkupLine("[grey]Interactive sample for Veadotube.Client[/]");
 IReadOnlyList<VeadotubeInstanceInfo> instances = VeadotubeInstanceDiscovery.Enumerate();
 if (instances.Count == 0)
 {
-    AnsiConsole.MarkupLine("[red]No live veadotube instances found.[/] Open veadotube mini and try again.");
+    AnsiConsole.MarkupLine(
+        "[red]No live veadotube instances found.[/] Open veadotube mini and try again."
+    );
     return;
 }
 
-VeadotubeInstanceInfo instance = instances.Count == 1
-    ? instances[0]
-    : AnsiConsole.Prompt(
-        new SelectionPrompt<VeadotubeInstanceInfo>()
-            .Title("Pick a veadotube instance:")
-            .UseConverter(i => $"{i.Name} [{i.Id}] @ {i.Server}")
-            .AddChoices(instances));
+VeadotubeInstanceInfo instance =
+    instances.Count == 1
+        ? instances[0]
+        : AnsiConsole.Prompt(
+            new SelectionPrompt<VeadotubeInstanceInfo>()
+                .Title("Pick a veadotube instance:")
+                .UseConverter(i => $"{i.Name} [{i.Id}] @ {i.Server}")
+                .AddChoices(instances)
+        );
 
-AnsiConsole.MarkupLine($"[green]Connecting[/] to {instance.WebSocketEndpoint("Veadotube.Client.Sample")}");
+AnsiConsole.MarkupLine(
+    $"[green]Connecting[/] to {instance.WebSocketEndpoint("Veadotube.Client.Sample")}"
+);
 
-await using VeadotubeClient client = new(new VeadotubeClientOptions
-{
-    Endpoint = instance.WebSocketEndpoint("Veadotube.Client.Sample"),
-});
+await using VeadotubeClient client = new(
+    new VeadotubeClientOptions { Endpoint = instance.WebSocketEndpoint("Veadotube.Client.Sample") }
+);
 
 client.Disconnected += (_, _) => AnsiConsole.MarkupLine("[yellow]disconnected[/]");
-client.Events.On<StateChangedEventPayload>(p => AnsiConsole.MarkupLine($"[cyan]state changed:[/] {p.State ?? "(empty)"}"));
-client.Events.On<BooleanChangedEventPayload>(p => AnsiConsole.MarkupLine($"[cyan]boolean changed:[/] {p.Value?.ToString() ?? "(unset)"}"));
-client.Events.On<NumberChangedEventPayload>(p => AnsiConsole.MarkupLine($"[cyan]number changed:[/] {p.Value}"));
-client.Events.On<NodeListChangedEventPayload>(p => AnsiConsole.MarkupLine($"[cyan]node list changed:[/] {p.Entries.Count} entries"));
+client.Events.On<StateChangedEventPayload>(p =>
+    AnsiConsole.MarkupLine($"[cyan]state changed:[/] {p.State ?? "(empty)"}")
+);
+client.Events.On<BooleanChangedEventPayload>(p =>
+    AnsiConsole.MarkupLine($"[cyan]boolean changed:[/] {p.Value?.ToString() ?? "(unset)"}")
+);
+client.Events.On<NumberChangedEventPayload>(p =>
+    AnsiConsole.MarkupLine($"[cyan]number changed:[/] {p.Value}")
+);
+client.Events.On<NodeListChangedEventPayload>(p =>
+    AnsiConsole.MarkupLine($"[cyan]node list changed:[/] {p.Entries.Count} entries")
+);
 
 await client.ConnectAsync();
 AnsiConsole.MarkupLine("[green]connected[/]");
@@ -44,7 +57,8 @@ AnsiConsole.MarkupLine($"  name: {info.Name}, version: {info.Version}, language:
 
 NodeListResponse nodes = await client.GetNodesAsync();
 Table nodeTable = new Table().AddColumns("Type", "Id", "Name");
-foreach (NodeListEntry entry in nodes.Entries) nodeTable.AddRow(entry.Type, entry.Id, entry.Name);
+foreach (NodeListEntry entry in nodes.Entries)
+    nodeTable.AddRow(entry.Type, entry.Id, entry.Name);
 AnsiConsole.Write(nodeTable);
 
 while (true)
@@ -52,7 +66,18 @@ while (true)
     string choice = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
             .Title("Action?")
-            .AddChoices("List states", "Peek state", "Push state", "Pop", "Toggle state", "Clear stack", "Toggle push-to-talk", "Listen to a node", "Quit"));
+            .AddChoices(
+                "List states",
+                "Peek state",
+                "Push state",
+                "Pop",
+                "Toggle state",
+                "Clear stack",
+                "Toggle push-to-talk",
+                "Listen to a node",
+                "Quit"
+            )
+    );
 
     try
     {
@@ -62,7 +87,8 @@ while (true)
             {
                 NodeListEntry node = PickStateNode(nodes);
                 StateListResponse list = await client.States(node.Id).ListAsync();
-                foreach (StateInfo s in list.States) AnsiConsole.MarkupLine($"  [yellow]{s.Id}[/] — {s.Name}");
+                foreach (StateInfo s in list.States)
+                    AnsiConsole.MarkupLine($"  [yellow]{s.Id}[/] — {s.Name}");
                 break;
             }
             case "Peek state":
@@ -111,13 +137,18 @@ while (true)
             }
             case "Listen to a node":
             {
-                NodeListEntry node = AnsiConsole.Prompt(new SelectionPrompt<NodeListEntry>().Title("which node?").UseConverter(n => $"{n.Type} {n.Id}").AddChoices(nodes.Entries));
+                NodeListEntry node = AnsiConsole.Prompt(
+                    new SelectionPrompt<NodeListEntry>()
+                        .Title("which node?")
+                        .UseConverter(n => $"{n.Type} {n.Id}")
+                        .AddChoices(nodes.Entries)
+                );
                 Task listenTask = node.Type switch
                 {
                     "stateEvents" => client.States(node.Id).ListenAsync("sample"),
-                    "boolean"     => client.Boolean(node.Id).ListenAsync("sample"),
-                    "number"      => client.Number(node.Id).ListenAsync("sample"),
-                    _             => Task.CompletedTask,
+                    "boolean" => client.Boolean(node.Id).ListenAsync("sample"),
+                    "number" => client.Number(node.Id).ListenAsync("sample"),
+                    _ => Task.CompletedTask,
                 };
                 await listenTask;
                 AnsiConsole.MarkupLine("[green]subscribed[/]");
@@ -133,8 +164,18 @@ while (true)
     }
 }
 
-static NodeListEntry PickStateNode(NodeListResponse nodes)
-    => AnsiConsole.Prompt(new SelectionPrompt<NodeListEntry>().Title("which stateEvents node?").UseConverter(n => $"{n.Type} {n.Id}").AddChoices(nodes.Entries.Where(e => e.Type == "stateEvents")));
+static NodeListEntry PickStateNode(NodeListResponse nodes) =>
+    AnsiConsole.Prompt(
+        new SelectionPrompt<NodeListEntry>()
+            .Title("which stateEvents node?")
+            .UseConverter(n => $"{n.Type} {n.Id}")
+            .AddChoices(nodes.Entries.Where(e => e.Type == "stateEvents"))
+    );
 
-static NodeListEntry PickBooleanNode(NodeListResponse nodes)
-    => AnsiConsole.Prompt(new SelectionPrompt<NodeListEntry>().Title("which boolean node?").UseConverter(n => $"{n.Type} {n.Id}").AddChoices(nodes.Entries.Where(e => e.Type == "boolean")));
+static NodeListEntry PickBooleanNode(NodeListResponse nodes) =>
+    AnsiConsole.Prompt(
+        new SelectionPrompt<NodeListEntry>()
+            .Title("which boolean node?")
+            .UseConverter(n => $"{n.Type} {n.Id}")
+            .AddChoices(nodes.Entries.Where(e => e.Type == "boolean"))
+    );
