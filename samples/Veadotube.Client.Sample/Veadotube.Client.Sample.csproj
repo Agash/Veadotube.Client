@@ -6,6 +6,9 @@
     <RootNamespace>Veadotube.Client.Sample</RootNamespace>
     <IsPackable>false</IsPackable>
     <PublishAot>true</PublishAot>
+    <!-- A native executable ships no XML docs. The Compile-only AOT publish (dotnet/sdk#54515) also
+         never copies them into OutDir, where publish looks (MSB3030). -->
+    <PublishDocumentationFiles>false</PublishDocumentationFiles>
     <InvariantGlobalization>true</InvariantGlobalization>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Non-shipped smoke-test app: don't gate the build on IDE code-style rules. -->
